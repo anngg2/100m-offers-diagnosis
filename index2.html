@@ -3,77 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fix Your Offer — $27</title>
+<title>$100M Offer Diagnosis — Free Tool</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
 body {
   margin:0;
-  background:#0b0b0b;
-  color:#f5f5f5;
+  background:#080808;
+  color:#f4efe6;
   font-family:'DM Sans',sans-serif;
 }
 
 .container {
-  max-width:800px;
+  max-width:720px;
   margin:0 auto;
   padding:40px 20px;
 }
 
-h1,h2 {
-  font-family:'Bebas Neue',sans-serif;
-  letter-spacing:1px;
-}
-
 h1 {
-  font-size:64px;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:72px;
   line-height:1;
-  margin-bottom:20px;
 }
 
-h2 {
-  font-size:36px;
-  margin-top:60px;
+textarea {
+  width:100%;
+  height:220px;
+  margin-top:20px;
+  padding:15px;
+  background:#111;
+  color:#fff;
+  border:1px solid #333;
 }
 
-p {
-  line-height:1.7;
-  color:#ccc;
+button {
+  width:100%;
+  margin-top:20px;
+  padding:18px;
+  background:#e03120;
+  color:#fff;
+  border:none;
+  font-size:22px;
+  font-family:'Bebas Neue';
+  cursor:pointer;
 }
 
-.highlight {
-  color:#ff3c2f;
+.results {
+  margin-top:50px;
 }
 
-.box {
-  border:1px solid rgba(255,255,255,0.1);
-  padding:20px;
+.results h2 {
+  font-family:'Bebas Neue';
+  margin-top:40px;
+}
+
+.results hr {
+  border:none;
+  border-top:1px solid #333;
   margin:30px 0;
-  background:rgba(255,255,255,0.03);
+}
+
+.results ul {
+  padding-left:20px;
 }
 
 .cta {
+  margin-top:50px;
+  padding:30px;
+  border:1px solid #333;
+  text-align:center;
+}
+
+.cta a {
   display:block;
-  text-align:center;
-  background:#ff3c2f;
+  margin-top:20px;
+  padding:15px;
+  background:#e03120;
   color:#fff;
-  padding:18px;
   text-decoration:none;
-  font-size:24px;
-  font-family:'Bebas Neue',sans-serif;
-  margin-top:30px;
+  font-size:20px;
 }
 
-.small {
-  font-size:12px;
-  color:#888;
-  text-align:center;
-}
-
-ul {
-  padding-left:20px;
-}
 </style>
 </head>
 
@@ -81,159 +92,113 @@ ul {
 
 <div class="container">
 
-<!-- HERO -->
-<h1>You Just Saw<br><span class="highlight">What's Broken.</span></h1>
+<h1>Your Offer Has Problems.<br>Fix Them.</h1>
 
-<p>
-Your offer isn't failing because you're lazy.
-It's failing because <strong>you can't see the gaps.</strong>
-</p>
+<textarea id="input"></textarea>
 
-<p>
-Now you can.
-</p>
+<button onclick="run()">DIAGNOSE MY OFFER</button>
 
-<div class="box">
-<p><strong>Your diagnosis revealed:</strong></p>
-<ul>
-<li>Weak Value Equation</li>
-<li>Unclear Dream Outcome</li>
-<li>Low perceived likelihood</li>
-<li>No real “why now” urgency</li>
-</ul>
+<div id="output" class="results"></div>
+
+<div class="cta">
+  <p>With a few fixes, this could easily become a <strong>9/10 offer</strong>.</p>
+  <a href="https://cecila2.gumroad.com/l/ilhmg" target="_blank">
+    GET THE COMPLETE SYSTEM — $27
+  </a>
 </div>
 
-<p>
-And here's the truth:
-</p>
-
-<h2>If you don’t fix this…</h2>
-
-<p>
-You can write better copy.  
-Run more ads.  
-Even get more traffic.
-</p>
-
-<p>
-<strong>It still won’t convert.</strong>
-</p>
-
----
-
-<h2>Because your OFFER is the bottleneck.</h2>
-
-<p>
-Not your funnel.  
-Not your ads.  
-Not your copy.
-</p>
-
-<p class="highlight">
-Your OFFER.
-</p>
-
----
-
-<h2>So I built the exact system to fix it.</h2>
-
-<p>
-This is the same framework behind:
-</p>
-
-<ul>
-<li>Irresistible high-ticket offers</li>
-<li>“Stupid to say no” pricing</li>
-<li>8-figure offer structures</li>
-</ul>
-
----
-
-<h2>Inside the $27 System:</h2>
-
-<div class="box">
-<ul>
-<li><strong>Offer Rebuilder Blueprint</strong><br>
-Turn your weak offer into a Grand Slam structure</li>
-
-<li><strong>Value Equation Maximizer</strong><br>
-Fix the exact lever killing your conversions</li>
-
-<li><strong>Bonus Stack Generator</strong><br>
-Remove objections before they happen</li>
-
-<li><strong>Guarantee Builder</strong><br>
-Make buying feel risk-free</li>
-
-<li><strong>Pricing & Anchoring System</strong><br>
-Make your price feel like a steal</li>
-</ul>
 </div>
 
----
+<script>
+const API_KEY = "YOUR_API_KEY";
 
-<h2>This is NOT theory.</h2>
+const PROMPT = `
+You are a world-class Offer Strategist trained by Alex Hormozi.
 
-<p>
-You already saw the diagnosis.
-</p>
+Analyze using $100M Offers.
 
-<p>
-This is the <strong>fix.</strong>
-</p>
+STYLE:
+- Encouraging but honest
+- Start with strengths
 
----
+FORMAT:
 
-<h2>Imagine this instead:</h2>
-
-<ul>
-<li>Your offer instantly makes sense</li>
-<li>People WANT to buy</li>
-<li>No more guessing pricing</li>
-<li>No more “why isn’t this converting?”</li>
-</ul>
+## 1. Overall Grand Slam Score
+Score + summary
 
 ---
 
-<h2>Price: <span class="highlight">$27</span></h2>
-
-<p class="small">Normally $97</p>
-
----
-
-<a href="https://cecila2.gumroad.com/l/ilhmg" class="cta">
-GET THE COMPLETE SYSTEM
-</a>
-
-<p class="small">
-30-day money-back guarantee · No risk
-</p>
+## 2. Value Equation
+Dream Outcome  
+Likelihood  
+Time Delay  
+Effort  
 
 ---
 
-<h2>Last thing.</h2>
+## 3. What’s Working Well
+- points
 
-<p>
-Most people will look at their diagnosis…
-</p>
+---
 
-<p>
-…then do nothing.
-</p>
+## 4. Opportunities
+Quote + explanation + direction
 
-<p class="highlight">
-And stay stuck.
-</p>
+---
 
-<p>
-The ones who fix their offer?
-</p>
+## 5. Diagnosis
+Category of One  
+Bonuses  
+Guarantee  
+Scarcity  
+Score  
 
-<p>
-They win.
-</p>
+---
 
-</div>
+## 6. Next Step
+
+Rules:
+No full rewrite.
+`;
+
+async function run() {
+  const text = document.getElementById("input").value;
+
+  const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + API_KEY
+    },
+    body: JSON.stringify({
+      model: "deepseek-chat",
+      temperature: 0.7,
+      messages: [
+        { role: "system", content: PROMPT },
+        { role: "user", content: text }
+      ]
+    })
+  });
+
+  const data = await res.json();
+  const output = data.choices[0].message.content;
+
+  render(output);
+}
+
+function render(md) {
+  let html = md
+    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^- (.*$)/gim, '<li>$1</li>')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/---/g, '<hr>');
+
+  html = html.replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>');
+
+  document.getElementById("output").innerHTML = html;
+}
+</script>
 
 </body>
 </html>
