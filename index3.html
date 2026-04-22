@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>$100M Offer Diagnosis — Free Tool by Leo Golden</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080808;
+  --white: #f4efe6;
+  --red: #e03120;
+  --gold: #f0a500;
+  --gray1: #1a1a1a;
+  --gray2: #2c2c2c;
+  --gray3: #555;
+  --border: rgba(244,239,230,0.1);
+  --border2: rgba(244,239,230,0.2);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--black); color:var(--white);
+  font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden;
+}
+body::after {
+  content:''; position:fixed; inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(224,49,32,0.07) 0%,transparent 70%);
+  pointer-events:none; z-index:0;
+}
+.container { max-width:720px; margin:0 auto; padding:0 24px; position:relative; z-index:1; }
+
+/* HEADER */
+header { padding:52px 0 36px; border-bottom:1px solid var(--border); }
+.badge {
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em;
+  text-transform:uppercase; color:var(--red);
+  border:1px solid rgba(224,49,32,0.4); padding:5px 12px; margin-bottom:24px;
+}
+.badge::before { content:'●'; font-size:7px; animation:blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+h1 {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(52px,11vw,88px);
+  line-height:0.9; letter-spacing:0.02em; margin-bottom:18px;
+}
+h1 em { color:var(--red); font-style:normal; }
+.hero-sub {
+  font-size:15px; color:rgba(244,239,230,0.5); font-weight:300;
+  line-height:1.65; max-width:500px;
+}
+.hero-sub strong { color:var(--white); font-weight:500; }
+
+/* TABS */
+.input-tabs {
+  display:flex; margin-top:40px;
+  border-bottom:1px solid var(--border);
+}
+.tab-btn {
+  background:transparent; border:none; color:rgba(244,239,230,0.35);
+  font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.14em;
+  text-transform:uppercase; padding:12px 20px; cursor:pointer;
+  border-bottom:2px solid transparent; margin-bottom:-1px; transition:all 0.2s;
+}
+.tab-btn:hover { color:rgba(244,239,230,0.7); }
+.tab-btn.active { color:var(--white); border-bottom-color:var(--red); }
+
+/* PANELS */
+.panel { display:none; padding:28px 0 0; }
+.panel.active { display:block; }
+
+.field-label {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em;
+  text-transform:uppercase; color:rgba(244,239,230,0.4); margin-bottom:10px;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.url-row { display:flex; gap:10px; }
+input[type=text], textarea {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(244,239,230,0.14);
+  border-left:3px solid var(--red);
+  color:var(--white); font-family:'DM Sans',sans-serif;
+  font-size:14px; line-height:1.7; padding:14px 18px;
+  outline:none; width:100%; transition:border-color 0.2s, background 0.2s;
+}
+input[type=text]::placeholder, textarea::placeholder { color:rgba(244,239,230,0.18); }
+input[type=text]:focus, textarea:focus {
+  border-color:rgba(244,239,230,0.3);
+  border-left-color:var(--red);
+  background:rgba(255,255,255,0.05);
+}
+textarea { height:230px; resize:vertical; }
+.fetch-btn {
+  background:var(--gray2); color:var(--white); border:none;
+  padding:14px 20px; font-family:'DM Mono',monospace; font-size:11px;
+  letter-spacing:0.1em; cursor:pointer; white-space:nowrap;
+  transition:background 0.2s; flex-shrink:0;
+}
+.fetch-btn:hover { background:var(--gray3); }
+.fetch-btn:disabled { opacity:0.4; cursor:not-allowed; }
+.fetch-status {
+  margin-top:8px; font-family:'DM Mono',monospace; font-size:11px; display:none;
+}
+.fetch-status.ok  { color:#5cb85c; display:block; }
+.fetch-status.err { color:var(--red); display:block; }
+.fetch-status.info{ color:var(--gold); display:block; }
+.char-count { font-family:'DM Mono',monospace; font-size:11px; color:rgba(244,239,230,0.25); }
+
+/* SUBMIT */
+.submit-wrap { margin-top:24px; }
+.submit-btn {
+  width:100%; background:var(--red); color:var(--white); border:none;
+  padding:20px 32px; font-family:'Bebas Neue',sans-serif;
+  font-size:24px; letter-spacing:0.08em; cursor:pointer;
+  transition:background 0.2s, transform 0.1s;
+}
+.submit-btn:hover { background:#c82b1c; }
+.submit-btn:active { transform:scale(0.99); }
+.submit-btn:disabled { background:var(--gray2); cursor:not-allowed; transform:none; }
+.submit-btn small {
+  display:block; font-family:'DM Mono',monospace;
+  font-size:10px; letter-spacing:0.15em; opacity:0.6; margin-top:3px;
+}
+.error-box {
+  display:none; background:rgba(224,49,32,0.08);
+  border:1px solid rgba(224,49,32,0.3);
+  padding:14px 18px; margin-top:16px;
+  font-family:'DM Mono',monospace; font-size:12px; color:var(--red); line-height:1.5;
+}
+.error-box.active { display:block; }
+
+/* LOADING */
+.loading { display:none; text-align:center; padding:60px 0; }
+.loading.active { display:block; }
+.loading-bar { width:100%; height:1px; background:var(--gray2); margin-bottom:32px; overflow:hidden; }
+.loading-bar-fill {
+  height:100%; background:var(--red);
+  animation:sweep 2s ease-in-out infinite; width:35%;
+}
+@keyframes sweep { 0%{transform:translateX(-200%)} 100%{transform:translateX(400%)} }
+.loading-steps { display:flex; flex-direction:column; gap:10px; align-items:center; }
+.loading-step {
+  font-family:'DM Mono',monospace; font-size:11px;
+  letter-spacing:0.14em; color:rgba(244,239,230,0.25); transition:color 0.4s;
+}
+.loading-step.active { color:var(--white); }
+.loading-step.done  { color:rgba(244,239,230,0.3); text-decoration:line-through; }
+
+/* RESULTS */
+.results { display:none; margin-top:56px; }
+.results.active { display:block; animation:fadeUp 0.5s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+.results-meta {
+  display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;
+}
+.results-title {
+  font-family:'Bebas Neue',sans-serif; font-size:38px; letter-spacing:0.04em;
+}
+.verdict-badge {
+  font-family:'DM Mono',monospace; font-size:11px;
+  letter-spacing:0.1em; padding:5px 12px; border:1px solid;
+}
+.verdict-bad { border-color:var(--red); color:var(--red); }
+.verdict-mid { border-color:var(--gold); color:var(--gold); }
+
+.ai-response {
+  line-height:1.75;
+  font-size:15px;
+  color:rgba(244,239,230,0.9);
+}
+.ai-response h1, .ai-response h2, .ai-response h3 {
+  font-family:'Bebas Neue',sans-serif;
+  margin:28px 0 12px;
+  color:var(--white);
+  letter-spacing:0.02em;
+}
+.ai-response strong { color:var(--gold); }
+.ai-response ul { padding-left:24px; margin:16px 0; }
+.ai-response li { margin-bottom:8px; }
+
+/* CTA */
+.upgrade-cta {
+  margin-top:48px; padding:36px;
+  background:linear-gradient(135deg,rgba(224,49,32,0.1),rgba(240,165,0,0.06));
+  border:1px solid rgba(224,49,32,0.25);
+  text-align:center; position:relative; overflow:hidden;
+}
+.upgrade-cta::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,var(--red),var(--gold));
+}
+.cta-eyebrow {
+  font-family:'DM Mono',monospace; font-size:10px;
+  letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:14px;
+}
+.cta-headline {
+  font-family:'Bebas Neue',sans-serif; font-size:38px;
+  letter-spacing:0.04em; line-height:1; margin-bottom:14px;
+}
+.cta-body {
+  font-size:13px; color:rgba(244,239,230,0.55);
+  max-width:420px; margin:0 auto 28px; line-height:1.65;
+}
+.cta-link {
+  display:inline-block; background:var(--red); color:var(--white);
+  text-decoration:none; padding:16px 40px;
+  font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:0.08em;
+  transition:background 0.2s, transform 0.15s;
+}
+.cta-link:hover { background:#c82b1c; transform:translateY(-2px); }
+.cta-price {
+  margin-top:12px; font-family:'DM Mono',monospace;
+  font-size:11px; color:rgba(244,239,230,0.35);
+}
+.cta-price s { opacity:0.5; }
+.cta-price strong { color:var(--gold); }
+
+.reset-btn {
+  display:block; margin:20px auto 0;
+  background:transparent; border:1px solid var(--border);
+  color:rgba(244,239,230,0.35); padding:9px 22px;
+  font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em;
+  cursor:pointer; transition:all 0.2s;
+}
+.reset-btn:hover { border-color:var(--border2); color:rgba(244,239,230,0.65); }
+
+footer {
+  padding:32px 0 52px; border-top:1px solid var(--border);
+  margin-top:60px; display:flex; justify-content:space-between;
+  align-items:center; flex-wrap:wrap; gap:10px;
+}
+.footer-note { font-family:'DM Mono',monospace; font-size:10px; color:rgba(244,239,230,0.2); }
+
+@media(max-width:580px) {
+  .url-row { flex-direction:column; }
+  footer { flex-direction:column; }
+  .upgrade-cta { padding:28px 20px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="badge">Free Diagnosis Tool</div>
+  <h1>Your Offer<br>Has <em>Potential.</em><br>Let's Find It.</h1>
+  <p class="hero-sub">
+    Paste your sales page (or drop a URL).<br>
+    We run it through <strong>Alex Hormozi’s complete $100M Offers framework</strong>:<br>
+    Value Equation · Grand Slam Structure · Trim & Stack · Avatar Clarity.<br>
+    You’ll get a clear, honest, professional diagnosis — what’s working and where you can improve.
+  </p>
+</header>
+
+<main>
+  <div class="input-tabs">
+    <button class="tab-btn active" onclick="switchTab('url')">① Try URL first</button>
+    <button class="tab-btn" onclick="switchTab('paste')">② Paste content</button>
+  </div>
+
+  <!-- URL PANEL (added for completeness) -->
+  <div class="panel active" id="panel-url">
+    <div class="field-label">
+      <span>Enter your sales page URL</span>
+    </div>
+    <div class="url-row">
+      <input type="text" id="urlInput" placeholder="https://your-sales-page.com">
+      <button class="fetch-btn" id="fetchBtn" onclick="fetchUrl()">FETCH PAGE</button>
+    </div>
+    <div class="fetch-status" id="fetchStatus"></div>
+    <textarea id="fetchedContent" style="display:none;" readonly></textarea>
+    <div id="fetchedPreview" style="display:none; margin-top:12px; font-size:13px; color:rgba(244,239,230,0.6);"></div>
+  </div>
+
+  <!-- PASTE PANEL -->
+  <div class="panel" id="panel-paste">
+    <div class="field-label">
+      <span>Paste your sales page text</span>
+      <span class="char-count" id="charCount">0 chars</span>
+    </div>
+    <textarea id="pasteInput" placeholder="Copy and paste your entire sales page — headline, bullets, pricing, guarantee, bonuses, everything. The more detail you give, the sharper the diagnosis."></textarea>
+  </div>
+
+  <div class="submit-wrap">
+    <button class="submit-btn" id="submitBtn" onclick="runDiagnosis()">
+      DIAGNOSE MY OFFER
+      <small>FREE · NO SIGNUP · HORMOZI FRAMEWORK</small>
+    </button>
+  </div>
+
+  <div class="error-box" id="errorBox"></div>
+
+  <!-- LOADING -->
+  <div class="loading" id="loadingDiv">
+    <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+    <div class="loading-steps">
+      <div class="loading-step" id="step1">PARSING OFFER STRUCTURE...</div>
+      <div class="loading-step" id="step2">RUNNING VALUE EQUATION...</div>
+      <div class="loading-step" id="step3">CHECKING GRAND SLAM CRITERIA...</div>
+      <div class="loading-step" id="step4">COMPILING PROFESSIONAL DIAGNOSIS...</div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results" id="resultsDiv">
+    <div class="results-meta">
+      <div class="results-title">Diagnosis Report</div>
+      <div class="verdict-badge verdict-mid" id="verdictBadge">PROFESSIONAL ANALYSIS</div>
+    </div>
+
+    <div class="ai-response" id="aiResponse"></div>
+
+    <div class="upgrade-cta">
+      <div class="cta-eyebrow">You now know exactly where you stand.</div>
+      <div class="cta-headline">Ready for the Full Grand Slam Offer?</div>
+      <p class="cta-body">
+        The free diagnosis shows you what’s working and where the opportunities are.<br>
+        Upgrade for the complete rewrite: new structure, pricing, bonuses, guarantee — everything built with Hormozi’s framework.
+      </p>
+      <a href="https://cecila2.gumroad.com/l/ilhmg" target="_blank" class="cta-link">GET THE COMPLETE SYSTEM — $27</a>
+      <div class="cta-price"><s>normally $97</s> → <strong>launch price $27</strong> · 30-day money-back guarantee</div>
+    </div>
+
+    <button class="reset-btn" onclick="resetTool()">← Diagnose another offer</button>
+  </div>
+
+</main>
+
+<footer>
+  <span class="footer-note">Based on Alex Hormozi’s $100M Offers framework</span>
+  <span class="footer-note">Free tool by Leo Golden</span>
+</footer>
+
+</div>
+
+<script>
+const API_KEY = 'sk-617884ea401d452fb2dabe0643f3a8fb';
+const MODEL   = 'deepseek-chat';
+
+let activeTab = 'url';
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', (i===0 && tab==='url') || (i===1 && tab==='paste'));
+  });
+  document.getElementById('panel-url').classList.toggle('active', tab==='url');
+  document.getElementById('panel-paste').classList.toggle('active', tab==='paste');
+}
+
+document.getElementById('pasteInput').addEventListener('input', function() {
+  document.getElementById('charCount').textContent = this.value.length + ' chars';
+});
+
+async function fetchUrl() {
+  const url = document.getElementById('urlInput').value.trim();
+  const btn = document.getElementById('fetchBtn');
+  if (!url || !url.startsWith('http')) {
+    setFetchStatus('err','✗ Please enter a valid URL starting with http:// or https://');
+    return;
+  }
+  btn.disabled = true; btn.textContent = 'FETCHING...';
+  setFetchStatus('info','⟳ Fetching page content...');
+  try {
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+    const res = await fetch(proxyUrl);
+    if (!res.ok) throw new Error('Proxy failed');
+    const data = await res.json();
+    const html = data.contents || '';
+    if (!html || html.length < 200) throw new Error('Page returned no readable content');
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    tmp.querySelectorAll('script,style,nav,footer,header,[aria-hidden]').forEach(el=>el.remove());
+    let text = (tmp.innerText||tmp.textContent||'').replace(/\s{3,}/g,'\n\n').trim();
+    if (text.length < 150) throw new Error('Could not extract readable text');
+    if (text.length > 8000) text = text.slice(0,8000)+'\n\n[...truncated for analysis]';
+    document.getElementById('fetchedContent').value = text;
+    document.getElementById('fetchedPreview').innerHTML = `<strong>✅ ${text.length} characters extracted</strong><br><small>Ready for diagnosis</small>`;
+    document.getElementById('fetchedPreview').style.display = 'block';
+    setFetchStatus('ok','✓ Page fetched — ready to diagnose');
+  } catch(err) {
+    setFetchStatus('err',`✗ Could not fetch this page (${err.message}). Switch to Tab ② and paste manually.`);
+  } finally {
+    btn.disabled = false; btn.textContent = 'FETCH PAGE';
+  }
+}
+
+function setFetchStatus(type, msg) {
+  const el = document.getElementById('fetchStatus');
+  el.className = 'fetch-status ' + type;
+  el.textContent = msg;
+}
+
+const SYSTEM_PROMPT = `You are a world-class Offer Strategist trained directly by Alex Hormozi. Your job is to analyze ANY sales page using the exact $100M Offers framework from the book.
+
+Input: The user will paste the full text (or HTML) of a sales page.
+
+Your output MUST follow this exact structure and tone:
+- Be professional, factual, and encouraging. Never be completely negative. Always start with what’s working well, then point out specific opportunities for improvement with clear reasoning.
+- Use Hormozi’s Value Equation as the core lens: Value = (Dream Outcome × Perceived Likelihood of Achievement) / (Time Delay × Effort & Sacrifice)
+- Reference Trim & Stack, Bonus Stacking, Risk Reversal Guarantees, Scarcity/Urgency, Naming, and Grand Slam Offer principles where relevant.
+- Be specific: quote exact text/headlines/sections from the provided content when making a point.
+- Keep the tone direct but supportive — like a mentor who wants the user to win.
+
+Output Format (use clean markdown, clear headings):
+
+**1. Overall Grand Slam Score**  
+Give a score out of 10 (e.g. 6.8/10) and one-sentence summary of the current offer strength.
+
+**2. Value Equation Breakdown**  
+- Dream Outcome: [analysis + score 1-10]  
+- Perceived Likelihood of Achievement: [analysis + score 1-10]  
+- Time Delay: [analysis + score 1-10]  
+- Effort & Sacrifice: [analysis + score 1-10]  
+- Overall Value Score: XX/100
+
+**3. What’s Working Well (Strengths)**  
+List 3–5 specific things the sales page does right, with examples from the content.
+
+**4. Key Opportunities for Improvement**  
+List 4–6 specific, actionable areas (not vague criticism). For each:
+- Quote the relevant section  
+- Explain why it limits conversions using Hormozi principles  
+- Suggest the exact improvement direction (without writing the full new copy)
+
+**5. Grand Slam Offer Diagnosis**  
+- Is this currently a Category of One offer? Why or why not?  
+- Bonus stacking effectiveness  
+- Guarantee strength  
+- Scarcity/Urgency elements  
+- Overall “stupid to say no” factor (1-10)
+
+**6. Next Step Recommendation**  
+End with a short, motivating paragraph telling the user exactly what to do next.
+
+Rules:
+- Never provide the actual rewritten copy or full optimization. Only diagnosis.
+- Stay 100% neutral and data-driven — base everything on the content provided.
+- Use clear, confident, no-BS language like Alex Hormozi.
+- Keep total response under 1200 words for easy reading.`;
+
+let loadingInterval;
+function startLoadingAnim() {
+  const steps = ['step1','step2','step3','step4'];
+  let i = 0;
+  steps.forEach(id => document.getElementById(id).className = 'loading-step');
+  document.getElementById(steps[0]).classList.add('active');
+  loadingInterval = setInterval(() => {
+    if (i < steps.length-1) {
+      document.getElementById(steps[i]).className = 'loading-step done';
+      i++;
+      document.getElementById(steps[i]).classList.add('active');
+    }
+  }, 1800);
+}
+function stopLoadingAnim() { clearInterval(loadingInterval); }
+
+async function runDiagnosis() {
+  let offerText = '';
+  if (activeTab === 'url') {
+    offerText = document.getElementById('fetchedContent').value.trim();
+    if (!offerText) { showError('Please fetch a URL first — or switch to Tab ② and paste the content.'); return; }
+  } else {
+    offerText = document.getElementById('pasteInput').value.trim();
+    if (offerText.length < 80) { showError('Please paste more content — we need at least a few sentences to diagnose.'); return; }
+  }
+
+  document.getElementById('errorBox').className = 'error-box';
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('loadingDiv').classList.add('active');
+  document.getElementById('resultsDiv').classList.remove('active');
+  startLoadingAnim();
+
+  try {
+    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${API_KEY}` },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 2000,
+        temperature: 0.6,
+        messages:[
+          { role:'system', content: SYSTEM_PROMPT },
+          { role:'user', content:`Analyze this sales page using Hormozi’s $100M Offers framework:\n\n${offerText}` }
+        ]
+      })
+    });
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    const responseText = data.choices?.[0]?.message?.content || 'No response received.';
+    renderResults(responseText);
+  } catch(err) {
+    showError('Error: ' + err.message);
+  } finally {
+    stopLoadingAnim();
+    document.getElementById('submitBtn').disabled = false;
+    document.getElementById('loadingDiv').classList.remove('active');
+  }
+}
+
+function renderResults(responseText) {
+  document.getElementById('aiResponse').innerHTML = responseText.replace(/\n/g, '<br>');
+  document.getElementById('resultsDiv').classList.add('active');
+  setTimeout(()=>document.getElementById('resultsDiv').scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorBox');
+  el.textContent = msg; el.className = 'error-box active';
+  document.getElementById('loadingDiv').classList.remove('active');
+  document.getElementById('submitBtn').disabled = false;
+  stopLoadingAnim();
+}
+
+function resetTool() {
+  document.getElementById('pasteInput').value = '';
+  document.getElementById('urlInput').value = '';
+  document.getElementById('fetchedContent').value = '';
+  document.getElementById('fetchedPreview').style.display = 'none';
+  document.getElementById('charCount').textContent = '0 chars';
+  document.getElementById('fetchStatus').className = 'fetch-status';
+  document.getElementById('resultsDiv').classList.remove('active');
+  document.getElementById('errorBox').className = 'error-box';
+  switchTab('url');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
